@@ -1,11 +1,11 @@
-package move
+package main
 
 type Move struct {
 	X int
 	Y int
 }
 
-func New(x, y int) *Move {
+func NewMove(x, y int) *Move {
 	move := new(Move)
 	move.X = x
 	move.Y = y

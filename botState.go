@@ -1,10 +1,7 @@
-package bot
+package main
 
 import (
 	"fmt"
-	"github.com/wrthomps/GopherIt/field"
-	"github.com/wrthomps/GopherIt/move"
-	"github.com/wrthomps/GopherIt/player"
 	"strconv"
 	"strings"
 )
@@ -37,13 +34,13 @@ type BotState struct {
 	moveNumber  int
 	Timebank    int
 	myName      string
-	players     map[string]*player.Player
-	field       *field.Field
+	players     map[string]*Player
+	field       *Field
 }
 
 func (bs *BotState) Init() {
-	bs.players = make(map[string]*player.Player, 0)
-	bs.field = new(field.Field)
+	bs.players = make(map[string]*Player, 0)
+	bs.field = new(Field)
 	bs.field.Init()
 }
 
@@ -60,7 +57,7 @@ func (bs *BotState) ParseSettings(key, value string) error {
 	case PLAYER_NAMES:
 		playerNames := strings.Split(value, PLAYER_DELIMITER)
 		for _, playerName := range playerNames {
-			bs.players[playerName] = player.New(playerName, 0)
+			bs.players[playerName] = NewPlayer(playerName, 0)
 		}
 		break
 	case YOUR_BOT:
@@ -115,6 +112,6 @@ func (bs *BotState) ParsePlayerData(playerName, key, value string) error {
 	return nil
 }
 
-func (bs *BotState) AvailableMoves() []*move.Move {
+func (bs *BotState) AvailableMoves() []*Move {
 	return bs.field.AvailableMoves()
 }

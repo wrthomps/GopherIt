@@ -1,11 +1,11 @@
-package player
+package main
 
 type Player struct {
 	Name   string
 	Points int
 }
 
-func New(name string, points int) *Player {
+func NewPlayer(name string, points int) *Player {
 	p := new(Player)
 	p.Name = name
 	p.Points = points

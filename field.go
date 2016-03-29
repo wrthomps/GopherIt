@@ -1,8 +1,7 @@
-package field
+package main
 
 import (
 	"fmt"
-	"github.com/wrthomps/GopherIt/move"
 	"strconv"
 	"strings"
 )
@@ -56,12 +55,12 @@ func (f *Field) clearField() {
 	}
 }
 
-func (f *Field) AvailableMoves() []*move.Move {
-	moves := make([]*move.Move, 0)
+func (f *Field) AvailableMoves() []*Move {
+	moves := make([]*Move, 0)
 	for y := 0; y < f.Rows; y++ {
 		for x := 0; x < f.Cols; x++ {
 			if f.isEmptyPoint(x, y) && !f.isSuicideMove(x, y) {
-				moves = append(moves, move.New(x, y))
+				moves = append(moves, NewMove(x, y))
 			}
 		}
 	}

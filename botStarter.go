@@ -1,13 +1,12 @@
-package bot
+package main
 
 import (
-	"github.com/wrthomps/GopherIt/move"
 	"math/rand"
 )
 
 type BotStarter struct{}
 
-func (bs *BotStarter) GetMove(state *BotState, timeout int) *move.Move {
+func (bs *BotStarter) GetMove(state *BotState, timeout int) *Move {
 	state.Timebank = timeout
 
 	moves := state.AvailableMoves()
