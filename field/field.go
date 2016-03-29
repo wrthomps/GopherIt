@@ -75,7 +75,7 @@ func (f *Field) isEmptyPoint(x, y int) bool {
 
 func (f *Field) isSuicideMove(x, y int) bool {
 	mark := make([][]bool, f.Rows)
-	for tx := 0; tx < len(mark); x++ {
+	for tx := 0; tx < len(mark); tx++ {
 		mark[tx] = make([]bool, f.Cols)
 	}
 
@@ -118,7 +118,6 @@ func (f *Field) flood(mark [][]bool, x, y, player, stackCounter int) int {
 		neighborLiberties += f.flood(mark, x+1, y, player, stackCounter+1)
 		neighborLiberties += f.flood(mark, x, y-1, player, stackCounter+1)
 		neighborLiberties += f.flood(mark, x, y+1, player, stackCounter+1)
-
 	}
 	return neighborLiberties
 }

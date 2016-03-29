@@ -18,6 +18,7 @@ const (
 	MOVE       = "move"
 	PLACE_MOVE = "place_move"
 	PASS       = "pass"
+	KILL       = "kill"
 )
 
 type BotParser struct {
@@ -55,11 +56,13 @@ func (bp *BotParser) Run() {
 				time, _ := strconv.Atoi(parts[2])
 				move := bp.bot.GetMove(bp.currentState, time)
 				if move != nil {
-					fmt.Printf(PLACE_MOVE+"%s"+SPACE_DELIMITER+"%s\n", move.X, move.Y)
+					fmt.Printf(PLACE_MOVE+" %d %d\n", move.X, move.Y)
 				} else {
 					fmt.Println(PASS + "\n")
 				}
 			}
+		} else if parts[0] == KILL {
+			return
 		} else {
 			fmt.Println("Unknown command")
 		}

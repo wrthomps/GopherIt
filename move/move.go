@@ -7,7 +7,7 @@ type Move struct {
 
 func New(x, y int) *Move {
 	move := new(Move)
-	move.X = y
+	move.X = x
 	move.Y = y
 
 	return move
