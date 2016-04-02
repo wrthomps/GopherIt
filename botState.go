@@ -36,12 +36,15 @@ type BotState struct {
 	myName      string
 	players     map[string]*Player
 	field       *Field
+	history     map[uint32]bool
 }
 
 func (bs *BotState) Init() {
 	bs.players = make(map[string]*Player, 0)
+	bs.history = make(map[uint32]bool)
 	bs.field = new(Field)
 	bs.field.Init()
+	bs.history[bs.field.zhash] = true
 }
 
 func (bs *BotState) ParseSettings(key, value string) error {
@@ -113,5 +116,14 @@ func (bs *BotState) ParsePlayerData(playerName, key, value string) error {
 }
 
 func (bs *BotState) AvailableMoves() []*Move {
+	var movesWithKo []*Move = bs.field.AvailableMoves()
+	var moves []*Move = make([]*Move, 0)
+	for _, move := range movesWithKo {
+		var currentHashForMove uint32 = bs.field.HashAt(move.X, move.Y)
+		_, has := bs.history[bs.field.zhash^currentHashForMove^zhashes[move.X][move.Y][1]]
+		if !has {
+			moves = append(moves, move)
+		}
+	}
 	return bs.field.AvailableMoves()
 }

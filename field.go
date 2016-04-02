@@ -2,9 +2,13 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"strconv"
 	"strings"
 )
+
+var zhashes [][][]uint32
+var zhashInitialized bool = false
 
 const (
 	SEMI_COLON = ";"
@@ -19,9 +23,22 @@ type Field struct {
 	Rows       int
 	Cols       int
 	field      [][]int
+	zhash      uint32
 }
 
 func (f *Field) Init() error {
+	if !zhashInitialized {
+		zhashes = make([][][]uint32, f.Cols)
+		for col := range zhashes {
+			zhashes[col] = make([][]uint32, f.Rows)
+			for row := range zhashes[col] {
+				zhashes[col][row] = make([]uint32, 3)
+				zhashes[col][row][0] = rand.Uint32()
+				zhashes[col][row][1] = rand.Uint32()
+				zhashes[col][row][2] = rand.Uint32()
+			}
+		}
+	}
 	if f.Rows <= 0 || f.Cols <= 0 {
 		return fmt.Errorf("Invalid settings for field, cannot initialize")
 	}
@@ -29,8 +46,10 @@ func (f *Field) Init() error {
 	f.field = make([][]int, f.Cols)
 	for col := range f.field {
 		f.field[col] = make([]int, f.Rows)
+		for row := range f.field[col] {
+			f.zhash = f.zhash ^ zhashes[col][row][0]
+		}
 	}
-
 	f.clearField()
 	return nil
 }
@@ -66,6 +85,35 @@ func (f *Field) AvailableMoves() []*Move {
 	}
 
 	return moves
+}
+
+func (f *Field) Hash() uint32 {
+	f.zhash = 0
+	for col := range f.field {
+		for row := range f.field[col] {
+			var point int = 0
+			if f.field[col][row] == f.MyId {
+				point = 1
+			} else if f.field[col][row] == f.OpponentId {
+				point = 2
+			}
+			f.zhash = f.zhash ^ zhashes[col][row][point]
+		}
+	}
+	return f.zhash
+}
+
+func (f *Field) HashAt(x int, y int) uint32 {
+	if x < 0 || x >= f.Cols || y < 0 || y >= f.Rows {
+		return 0
+	}
+	var point = 0
+	if f.field[x][y] == f.MyId {
+		point = 1
+	} else if f.field[x][y] == f.OpponentId {
+		point = 2
+	}
+	return zhashes[x][y][point]
 }
 
 func (f *Field) isEmptyPoint(x, y int) bool {
